@@ -56,22 +56,34 @@ FILE *open_file_for_writing(const char *filename) {
 
 void close_file(FILE *fp) { fclose(fp); }
 
-int *read_numbers_from_file(const char *filename, int *count) {
+int *read_numbers_from_file(const char *filename, size_t *count) {
     FILE *file = fopen(filename, "r");
     if (!file) {
         perror("Erro ao abrir o arquivo");
         exit(EXIT_FAILURE);
     }
 
-    int capacity = 10;
+    size_t capacity = 10;
     int *numbers = malloc(capacity * sizeof(int));
+    if (numbers == NULL) {
+        perror("Erro ao alocar memória");
+        fclose(file);
+        exit(EXIT_FAILURE);
+    }
     *count = 0;
 
     while (fscanf(file, "%d", &numbers[*count]) == 1) {
         (*count)++;
         if (*count >= capacity) {
             capacity *= 2;
-            numbers = realloc(numbers, capacity * sizeof(int));
+            int *temp = realloc(numbers, capacity * sizeof(int));
+            if (temp == NULL) {
+                perror("Erro ao realocar memória");
+                free(numbers);
+                fclose(file);
+                exit(EXIT_FAILURE);
+            }
+            numbers = temp;
         }
     }
 

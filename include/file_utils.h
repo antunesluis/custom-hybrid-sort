@@ -11,6 +11,6 @@ bool write_numbers_to_file(const char *output_file, const int *numbers, int coun
 bool is_file(const char *arg);
 FILE *open_file_for_writing(const char *filename);
 void close_file(FILE *fp);
-int *read_numbers_from_file(const char *filename, int *count);
+int *read_numbers_from_file(const char *filename, size_t *count);
 
 #endif

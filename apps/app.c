@@ -3,8 +3,10 @@
 
 #include "cli.h"
 
+#define MIN_ARGS 2
+
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
+    if (argc < MIN_ARGS) {
         print_usage(argv[0]);
         return EXIT_FAILURE;
     }
