@@ -24,7 +24,8 @@ bool write_numbers_to_file(const char *output_file, const int *numbers, int coun
         return false;
     }
 
-    for (int i = 0; i < count; i++) {
+    int i;
+    for (i = 0; i < count; i++) {
         fprintf(fp, "%d\n", numbers[i]);
     }
     close_file(fp);

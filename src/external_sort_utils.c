@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define TEMP_FILE_PREFIX "temp_sorted_"
 
@@ -46,8 +47,8 @@ void generate_sorted_runs(const char *input_file, int num_elements, int *num_run
             exit(EXIT_FAILURE);
         }
 
-        // Gravar os números ordenados no arquivo temporário
-        for (int i = 0; i < count; i++) {
+        int i;
+        for (i = 0; i < count; i++) {
             fprintf(temp_file, "%d\n", buffer[i]);
         }
 
@@ -65,13 +66,14 @@ FILE **open_temp_files(int num_runs) {
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 0; i < num_runs; i++) {
+    int i, j;
+    for (i = 0; i < num_runs; i++) {
         char temp_file[256];
         snprintf(temp_file, sizeof(temp_file), "%s%d.txt", TEMP_FILE_PREFIX, i);
         temp_files[i] = fopen(temp_file, "r");
         if (!temp_files[i]) {
             perror("Error opening temporary file");
-            for (int j = 0; j < i; j++) {
+            for (j = 0; j < i; j++) {
                 fclose(temp_files[j]);
             }
             free(temp_files);
@@ -83,7 +85,8 @@ FILE **open_temp_files(int num_runs) {
 }
 
 void initialize_current_values(FILE **temp_files, int *current_values, int *active, int num_runs) {
-    for (int i = 0; i < num_runs; i++) {
+    int i;
+    for (i = 0; i < num_runs; i++) {
         if (fscanf(temp_files[i], "%d", &current_values[i]) == 1) {
             active[i] = 1;
         } else {
@@ -97,7 +100,8 @@ void merge_files(FILE *output, FILE **temp_files, int *current_values, int *acti
         int min_value = INT_MAX;
         int min_index = -1;
 
-        for (int i = 0; i < num_runs; i++) {
+        int i;
+        for (i = 0; i < num_runs; i++) {
             if (active[i] && current_values[i] < min_value) {
                 min_value = current_values[i];
                 min_index = i;
@@ -128,8 +132,10 @@ void merge_sorted_runs(const char *output_file, int num_runs) {
     int *current_values = (int *)malloc(num_runs * sizeof(int));
     int *active = (int *)malloc(num_runs * sizeof(int));
     if (current_values == NULL || active == NULL) {
+        int i;
+
         perror("Erro ao alocar memória para valores atuais ou ativos");
-        for (int i = 0; i < num_runs; i++) {
+        for (i = 0; i < num_runs; i++) {
             fclose(temp_files[i]);
         }
         free(temp_files);
@@ -142,7 +148,8 @@ void merge_sorted_runs(const char *output_file, int num_runs) {
     free(current_values);
     free(active);
 
-    for (int i = 0; i < num_runs; i++) {
+    int i;
+    for (i = 0; i < num_runs; i++) {
         fclose(temp_files[i]);
     }
     free(temp_files);
@@ -152,10 +159,7 @@ void merge_sorted_runs(const char *output_file, int num_runs) {
 void external_sort(SortExternalParams *params, SortAlgorithmConfig *algorithm_config) {
     int num_runs;
 
-    printf("\nComeçando a criar os temp!");
     generate_sorted_runs(params->input_file, params->num_elements, &num_runs, algorithm_config->threshold,
                          algorithm_config->sort_func);
-
-    printf("\nComeçando a juntar os temp!");
     merge_sorted_runs(params->output_file, num_runs);
 }

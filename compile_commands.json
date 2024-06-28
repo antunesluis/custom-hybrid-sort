@@ -2,16 +2,17 @@
   {
     "arguments": [
       "/usr/bin/gcc",
+      "-c",
       "-O3",
       "-Wall",
-      "-c",
-      "-I./include",
+      "-I",
+      "./include",
       "-o",
-      "obj/file_utils.o",
-      "src/file_utils.c"
+      "bin/app",
+      "apps/app.c"
     ],
     "directory": "/home/antunesluis/Projects/GitHub/custom-hybrid-sort",
-    "file": "/home/antunesluis/Projects/GitHub/custom-hybrid-sort/src/file_utils.c",
-    "output": "/home/antunesluis/Projects/GitHub/custom-hybrid-sort/obj/file_utils.o"
+    "file": "/home/antunesluis/Projects/GitHub/custom-hybrid-sort/apps/app.c",
+    "output": "/home/antunesluis/Projects/GitHub/custom-hybrid-sort/bin/app"
   }
 ]

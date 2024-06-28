@@ -10,7 +10,7 @@
 #include "random_numbers.h"
 #include "sorting_algorithms.h"
 
-#define MIN_MEMORY_SIZE (100 * 1024 * 1024)  // 100 MB
+#define MIN_MEMORY_SIZE (100 * 1024 * 1024)
 #define MIN_ARG_COUNT_GENERATE 5
 #define MIN_ARG_COUNT_SORT_INTERNAL 5
 #define MIN_ARG_COUNT_SORT_EXTERNAL 6
@@ -63,7 +63,7 @@ int parse_memory_size(const char *arg) {
     int size = atoi(size_str);
     free(size_str);
 
-    printf("Parsed memory size: %d bytes\n", size * multiplier);  // Debug statement
+    printf("Parsed memory size: %d bytes\n", size * multiplier);
 
     return size * multiplier;
 }
@@ -118,7 +118,8 @@ void handle_sort_internal_command(int argc, const char *argv[]) {
     algorithm_config.sort_func(numbers, 0, count - 1, algorithm_config.threshold);
 
     FILE *fp = open_file_for_writing(params.output_file);
-    for (int i = 0; i < count; i++) {
+    int i;
+    for (i = 0; i < count; i++) {
         fprintf(fp, "%d\n", numbers[i]);
     }
     close_file(fp);
@@ -138,16 +139,12 @@ void handle_sort_external_command(int argc, const char *argv[]) {
     params.output_file = argv[3];
     SortAlgorithmConfig algorithm_config = initialize_sort_algorithm_config(argv[4]);
 
-    printf("\nArqgumentos lidos!");
-
     int memory_size = parse_memory_size(argv[5]);
     if (memory_size < MIN_MEMORY_SIZE) {
         fprintf(stderr, "Memory size must be at least %d bytes.\n", MIN_MEMORY_SIZE);
         exit(EXIT_FAILURE);
     }
     params.num_elements = memory_size / sizeof(int);
-
-    printf("\nMemória necessária definida!");
 
     external_sort(&params, &algorithm_config);
     printf("Externally sorted numbers saved to %s using %s algorithm with memory size %d bytes.\n", params.output_file,

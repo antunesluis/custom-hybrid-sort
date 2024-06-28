@@ -5,7 +5,7 @@ LIB = ./lib
 OBJ = ./obj
 SRC = ./src
 
-FLAGS = -O3 -Wall
+FLAGS = -O3 -ansi -Wall
 LIBS = -L$(LIB) -lmyproject -lm
 
 all: directories generate myapps
