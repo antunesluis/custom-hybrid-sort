@@ -5,9 +5,10 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include "external_sort_utils.h"
 #include "file_utils.h"
 #include "random_numbers.h"
-#include "sort.h"
+#include "sorting_algorithms.h"
 
 #define MIN_MEMORY_SIZE (100 * 1024 * 1024)  // 100 MB
 #define MIN_ARG_COUNT_GENERATE 5
@@ -67,18 +68,37 @@ int parse_memory_size(const char *arg) {
     return size * multiplier;
 }
 
+SortAlgorithmConfig initialize_sort_algorithm_config(const char *algorithm) {
+    SortAlgorithmConfig config;
+    if (strcmp(algorithm, "merge_shell") == 0) {
+        config.algorithm_name = "merge_shell";
+        config.sort_func = merge_shell_sort;
+        config.threshold = 10;
+    } else if (strcmp(algorithm, "quick_insertion") == 0) {
+        config.algorithm_name = "quick_insertion";
+        config.sort_func = quick_insertion_sort;
+        config.threshold = 10;
+    } else {
+        fprintf(stderr, "Unknown sorting algorithm: %s\n", algorithm);
+        exit(EXIT_FAILURE);
+    }
+    return config;
+}
+
 void handle_generate_command(int argc, const char *argv[]) {
     if (argc != MIN_ARG_COUNT_GENERATE) {
         print_usage(argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    size_t num_values = atoi(argv[2]);
-    int max_value = atoi(argv[3]);
-    const char *output_file = argv[4];
+    GenerateParams params;
+    params.max_value = (size_t)atoi(argv[2]);
+    params.num_values = atoi(argv[3]);
+    params.output_file = argv[4];
 
-    generate_and_save_uniform_random_numbers(output_file, num_values, 0, max_value);
-    printf("Generated %ld random numbers up to %d and saved to %s.\n", num_values, max_value, output_file);
+    generate_and_save_uniform_random_numbers(&params);
+    printf("Generated %ld random numbers up to %d and saved to %s.\n", params.num_values, params.max_value,
+           params.output_file);
 }
 
 void handle_sort_internal_command(int argc, const char *argv[]) {
@@ -87,29 +107,24 @@ void handle_sort_internal_command(int argc, const char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    const char *input_file = argv[2];
-    const char *output_file = argv[3];
-    const char *algorithm = argv[4];
+    SortInternalParams params;
+    params.input_file = argv[2];
+    params.output_file = argv[3];
+    SortAlgorithmConfig algorithm_config = initialize_sort_algorithm_config(argv[4]);
 
     size_t count;
-    int *numbers = read_numbers_from_file(input_file, &count);
+    int *numbers = read_numbers_from_file(params.input_file, &count);
 
-    if (strcmp(algorithm, "merge_insertion") == 0) {
-        merge_insertion_sort(numbers, 0, count - 1);
-    } else {
-        fprintf(stderr, "Unknown sorting algorithm: %s\n", algorithm);
-        free(numbers);
-        exit(EXIT_FAILURE);
-    }
+    algorithm_config.sort_func(numbers, 0, count - 1, algorithm_config.threshold);
 
-    FILE *fp = open_file_for_writing(output_file);
+    FILE *fp = open_file_for_writing(params.output_file);
     for (int i = 0; i < count; i++) {
         fprintf(fp, "%d\n", numbers[i]);
     }
     close_file(fp);
 
     free(numbers);
-    printf("Sorted numbers saved to %s using %s algorithm.\n", output_file, algorithm);
+    printf("Sorted numbers saved to %s using %s algorithm.\n", params.output_file, params.algorithm);
 }
 
 void handle_sort_external_command(int argc, const char *argv[]) {
@@ -118,29 +133,23 @@ void handle_sort_external_command(int argc, const char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    const char *input_file = argv[2];
-    const char *output_file = argv[3];
-    const char *algorithm = argv[4];
+    SortExternalParams params;
+    params.input_file = argv[2];
+    params.output_file = argv[3];
+    SortAlgorithmConfig algorithm_config = initialize_sort_algorithm_config(argv[4]);
+
+    printf("\nArqgumentos lidos!");
 
     int memory_size = parse_memory_size(argv[5]);
-    printf("Parsed memory size: %d bytes\n", memory_size);  // Debug statement
-    int num_elements = memory_size / sizeof(int);
-
-    printf("\nInt memory size int: %ld bytes", sizeof(int));      // Debug statement
-    printf("\nInt memory size u_int: %ld bytes", sizeof(u_int));  // Debug statement
-    printf("\nNum elements: %d", num_elements);                   // Debug statement
-
     if (memory_size < MIN_MEMORY_SIZE) {
-        fprintf(stderr, "Memory size must be at least.\n");
+        fprintf(stderr, "Memory size must be at least %d bytes.\n", MIN_MEMORY_SIZE);
         exit(EXIT_FAILURE);
     }
+    params.num_elements = memory_size / sizeof(int);
 
-    if (strcmp(algorithm, "merge_insertion") != 0) {
-        fprintf(stderr, "Unknown sorting algorithm: %s\n", algorithm);
-        exit(EXIT_FAILURE);
-    }
-    external_merge_insertion_sort(input_file, output_file, num_elements);
+    printf("\nMemória necessária definida!");
 
-    printf("\nExternally sorted numbers saved to %s using %s algorithm with memory size %d bytes.\n", output_file,
-           algorithm, memory_size);
+    external_sort(&params, &algorithm_config);
+    printf("Externally sorted numbers saved to %s using %s algorithm with memory size %d bytes.\n", params.output_file,
+           algorithm_config.algorithm_name, memory_size);
 }

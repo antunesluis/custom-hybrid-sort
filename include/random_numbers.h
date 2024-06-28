@@ -1,6 +1,14 @@
 #ifndef RANDOM_NUMBERS_H
 #define RANDOM_NUMBERS_H
 
-void generate_and_save_uniform_random_numbers(const char *filename, int num_numbers, int min, int max);
+#include <stdio.h>
+
+typedef struct _generateParams {
+    size_t num_values;
+    int max_value;
+    const char *output_file;
+} GenerateParams;
+
+void generate_and_save_uniform_random_numbers(GenerateParams *params);
 
 #endif

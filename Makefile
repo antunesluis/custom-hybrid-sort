@@ -13,10 +13,12 @@ all: directories generate myapps
 directories:
 	mkdir -p $(OBJ)
 	mkdir -p $(BIN)
+	mkdir -p $(LIB)
 
 generate: $(OBJ)/file_utils.o \
+	$(OBJ)/external_sort_utils.o \
 	$(OBJ)/random_numbers.o \
-	$(OBJ)/sort.o \
+	$(OBJ)/sorting_algorithms.o \
 	$(OBJ)/cli.o
 	ar -rcs $(LIB)/libmyproject.a $(OBJ)/*.o
 
