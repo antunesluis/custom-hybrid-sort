@@ -28,18 +28,16 @@ void print_usage(const char *program_name) {
     fprintf(stderr, "   %s sort_internal <input_file> <output_file> <algorithm>\n", program_name);
     fprintf(stderr, "   - <input_file>: File containing numbers to sort.\n");
     fprintf(stderr, "   - <output_file>: File to save the sorted numbers.\n");
-    fprintf(stderr, "   - <algorithm>: Sorting algorithm to use (merge_insertion, quick_insertion).\n");
-    fprintf(stderr, "   Example: %s sort_internal input.txt output.txt merge_insertion\n\n", program_name);
+    fprintf(stderr, "   - <algorithm>: Sorting algorithm to use (merge_shell, quick_insertion).\n");
+    fprintf(stderr, "   Example: %s sort_internal input.txt output.txt merge_shell\n\n", program_name);
 
     fprintf(stderr, "3. Sort numbers externally:\n");
     fprintf(stderr, "   %s sort_external <input_file> <output_file> <algorithm> <memory_size>\n", program_name);
     fprintf(stderr, "   - <input_file>: File containing numbers to sort.\n");
     fprintf(stderr, "   - <output_file>: File to save the sorted numbers.\n");
-    fprintf(stderr,
-            "   - <algorithm>: Sorting algorithm to use (external_merge_insertion, external_quick_insertion).\n");
+    fprintf(stderr, "   - <algorithm>: Sorting algorithm to use (merge_shell, quick_insertion).\n");
     fprintf(stderr, "   - <memory_size>: Memory size to use for sorting, must be at least 100MB, e.g., 100M, 200M.\n");
-    fprintf(stderr, "   Example: %s sort_external input.txt output.txt external_merge_insertion 150M\n\n",
-            program_name);
+    fprintf(stderr, "   Example: %s sort_external input.txt output.txt quick_insertion 150M\n\n", program_name);
 }
 
 int parse_memory_size(const char *arg) {
