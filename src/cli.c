@@ -10,7 +10,12 @@
 #include "random_numbers.h"
 #include "sorting_algorithms.h"
 
+#define DEFAULF_THRESHOLD_VALUE 10
 #define MIN_MEMORY_SIZE (100 * 1024 * 1024)
+#define KB (1024)
+#define MB (1024 * KB)
+#define GB (1024 * MB)
+
 #define MIN_ARG_COUNT_GENERATE 5
 #define MIN_ARG_COUNT_SORT_INTERNAL 5
 #define MIN_ARG_COUNT_SORT_EXTERNAL 6
@@ -66,12 +71,12 @@ int parse_memory_size(const char *arg) {
 
     int multiplier = 1;
     if (arg[len - 1] == 'M' || arg[len - 1] == 'm') {
-        multiplier = 1024 * 1024;
+        multiplier = MB;
         len--;
     }
 
     if (arg[len - 1] == 'G' || arg[len - 1] == 'g') {
-        multiplier = 1024 * 1024 * 1024;
+        multiplier = GB;
     }
 
     char *size_str = strndup(arg, len);
@@ -88,11 +93,11 @@ SortAlgorithmConfig initialize_sort_algorithm_config(const char *algorithm) {
     if (strcmp(algorithm, "merge_shell") == 0) {
         config.algorithm_name = "merge_shell";
         config.sort_func = merge_shell_sort;
-        config.threshold = 10;
+        config.threshold = DEFAULF_THRESHOLD_VALUE;
     } else if (strcmp(algorithm, "quick_insertion") == 0) {
         config.algorithm_name = "quick_insertion";
         config.sort_func = quick_insertion_sort;
-        config.threshold = 10;
+        config.threshold = DEFAULF_THRESHOLD_VALUE;
     } else {
         fprintf(stderr, "Unknown sorting algorithm: %s\n", algorithm);
         exit(EXIT_FAILURE);

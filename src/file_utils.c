@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define CAPACITY_STARTER_VAlUE 10
+
 bool validate_input_files(const char *input_file, const char *output_file) {
     if (!is_file(input_file)) {
         fprintf(stderr, "Erro: Arquivo '%s' não encontrado.\n", input_file);
@@ -64,7 +66,7 @@ int *read_numbers_from_file(const char *filename, size_t *count) {
         exit(EXIT_FAILURE);
     }
 
-    size_t capacity = 10;
+    size_t capacity = CAPACITY_STARTER_VAlUE;
     int *numbers = malloc(capacity * sizeof(int));
     if (numbers == NULL) {
         perror("Erro ao alocar memória");

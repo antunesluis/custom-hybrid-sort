@@ -4,6 +4,7 @@
       "/usr/bin/gcc",
       "-c",
       "-O3",
+      "-ansi",
       "-Wall",
       "-I",
       "./include",
