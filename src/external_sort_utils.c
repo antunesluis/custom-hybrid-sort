@@ -69,7 +69,7 @@ FILE **open_temp_files(int num_runs) {
     int i, j;
     for (i = 0; i < num_runs; i++) {
         char temp_file[256];
-        snprintf(temp_file, sizeof(temp_file), "%s%d.txt", TEMP_FILE_PREFIX, i);
+        sprintf(temp_file, "%s%d.txt", TEMP_FILE_PREFIX, i);
         temp_files[i] = fopen(temp_file, "r");
         if (!temp_files[i]) {
             perror("Error opening temporary file");

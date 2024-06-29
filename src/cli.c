@@ -40,6 +40,23 @@ void print_usage(const char *program_name) {
     fprintf(stderr, "   Example: %s sort_external input.txt output.txt quick_insertion 150M\n\n", program_name);
 }
 
+char *strndup(const char *s, size_t n) {
+    size_t len = strlen(s);
+    if (n < len) {
+        len = n;
+    }
+
+    char *new_str = (char *)malloc(len + 1);
+    if (!new_str) {
+        return NULL;
+    }
+
+    strncpy(new_str, s, len);
+    new_str[len] = '\0';
+
+    return new_str;
+}
+
 int parse_memory_size(const char *arg) {
     int len = strlen(arg);
     if (len == 0) {
